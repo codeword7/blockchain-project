@@ -1,20 +1,24 @@
 import { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import config from "../config.json";
-import { loadProvider, loadNetwork, loadAccount, loadTokens } from "../store/interactions";
+import { loadProvider, loadNetwork, loadAccount, loadTokens, loadExchange } from "../store/interactions";
 
 function App() {
 
   const dispatch = useDispatch();
   const loadBlockchainData = async () => {
     
-    await loadAccount(dispatch);
     const provider = loadProvider(dispatch);
     const chainId = await loadNetwork(provider, dispatch);
+    
+    await loadAccount(provider, dispatch);
 
     const NRJ = config[chainId].NRJ;
     const mETH = config[chainId].mETH;
+    const exchangeConf = config[chainId].exchange;
+
     await loadTokens(provider, [NRJ.address, mETH.address], dispatch);
+    await loadExchange(provider, exchangeConf.address, dispatch);
   }
 
   useEffect(() => {
