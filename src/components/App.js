@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import config from "../config.json";
-import { loadProvider, loadNetwork, loadAccount, loadToken } from "../store/interactions";
+import { loadProvider, loadNetwork, loadAccount, loadTokens } from "../store/interactions";
 
 function App() {
 
@@ -12,7 +12,9 @@ function App() {
     const provider = loadProvider(dispatch);
     const chainId = await loadNetwork(provider, dispatch);
 
-    await loadToken(provider, config[chainId].NRJ.address, dispatch);
+    const NRJ = config[chainId].NRJ;
+    const mETH = config[chainId].mETH;
+    await loadTokens(provider, [NRJ.address, mETH.address], dispatch);
   }
 
   useEffect(() => {
