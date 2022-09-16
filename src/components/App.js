@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useDispatch } from "react-redux";
 import config from "../config.json";
 import { loadProvider, loadNetwork, loadAccount, loadTokens, loadExchange } from "../store/interactions";
+import Navbar from './Navbar';
 
 function App() {
 
@@ -11,7 +12,12 @@ function App() {
     const provider = loadProvider(dispatch);
     const chainId = await loadNetwork(provider, dispatch);
     
-    await loadAccount(provider, dispatch);
+    window.ethereum.on('chainChanged', () => {
+      window.location.reload()
+    })
+    window.ethereum.on('accountsChanged', async() => {
+      await loadAccount(provider, dispatch);
+    })
 
     const NRJ = config[chainId].NRJ;
     const mETH = config[chainId].mETH;
@@ -28,7 +34,7 @@ function App() {
   return (
     <div>
 
-      {/* Navbar */}
+      <Navbar />
 
       <main className='exchange grid'>
         <section className='exchange__section--left grid'>
